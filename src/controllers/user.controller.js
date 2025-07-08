@@ -291,6 +291,9 @@ const refreshAccessToken = asyncHandler(async (req, res) => {
 })
 
 const changeCurrentPassword = asyncHandler(async(req, res) => {
+    if (!req.body) {
+        throw new ApiError(400, "Request body is missing")
+    }
     const {oldPassword, newPassword} = req.body
 
     
