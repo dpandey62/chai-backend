@@ -8,3 +8,4 @@ Project uses all standard practices like JWT, bcrypt, access tokens, refresh Tok
 
 
 # How to contribute in this open source Project
+First, please understand that this is not your regular project to merge your PR
