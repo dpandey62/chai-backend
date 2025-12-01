@@ -50,4 +50,4 @@ import productRoutes from './routes/product.routes.js';
 app.use(errorHandler);
 
 export default app
-// No replacement needed, remove the duplicate and conflict markers
+

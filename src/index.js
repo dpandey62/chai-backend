@@ -48,3 +48,4 @@ if (!isVercel) {
       process.exit(1);
     });
 }
+
