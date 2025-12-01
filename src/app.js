@@ -46,4 +46,4 @@ import productRoutes from './routes/product.routes.js';
 //error middleware
 app.use(errorHandler);
 
-export { app }
+export default app
