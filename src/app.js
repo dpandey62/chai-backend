@@ -1,3 +1,4 @@
+
 import express from "express"
 import cors from "cors"
 import cookieParser from "cookie-parser"
@@ -47,3 +48,4 @@ import productRoutes from './routes/product.routes.js';
 app.use(errorHandler);
 
 export default app
+// No replacement needed, remove the duplicate and conflict markers

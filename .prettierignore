@@ -1,7 +1,16 @@
+<<<<<<< HEAD
 /.vscode
 /node_modules
 ./dist
 
 *.env
 .env
+=======
+/.vscode
+/node_modules
+./dist
+
+*.env
+.env
+>>>>>>> a44bf0de67fbc2d609efeb50a15bfa5ca0f8675d
 .env.*
