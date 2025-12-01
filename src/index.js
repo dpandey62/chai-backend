@@ -1,42 +1,50 @@
-// import dotenv from 'dotenv';
-// import connectDB from './db/index.js';
-// import {app }from './app.js'; 
-// //import './config/express.js';
+import dotenv from "dotenv";
+import connectDB from "./db/index.js";
+import app from "./app.js";
 
-// dotenv.config({
-//     path: './.env'
-// })
+dotenv.config({ path: ".env" });
 
-// connectDB()
-// .then(() => {
-//     app.listen(process.env.PORT || 8000, () => {
-//         console.log(`Server is running on port ${process.env.PORT}`);
-//  });
-// }).catch((error) => {
-//     console.error('Database connection failed:', error);
-//     process.exit(1); // Exit the process with failure
-// }
+// Detect if running on Vercel (serverless)
+const isVercel = !!process.env.VERCEL;
 
-// );
-import dotenv from "dotenv"
-import connectDB from "./db/index.js"
-import app from "./app.js"   // ← default import (kyunki ab app.js mein default export hai)
+// Track DB connection (to avoid reconnecting on every serverless call)
+let isConnected = false;
 
-dotenv.config({
-    path: "./.env"
-})
+// -------------------------------
+// MODE 1: VERSEL SERVERLESS MODE
+// -------------------------------
+export default async function handler(req, res) {
+  if (!isVercel) return; // Only executed on Vercel
 
-connectDB()
+  try {
+    if (!isConnected) {
+      await connectDB();
+      isConnected = true;
+      console.log("MongoDB Connected (Vercel)");
+    }
+
+    return app(req, res); // Express-style handling
+
+  } catch (err) {
+    console.error("Vercel Function Error:", err);
+    return res.status(500).json({ error: "Server error" });
+  }
+}
+
+
+// ------------------------------
+// MODE 2: LOCAL DEVELOPMENT MODE
+// ------------------------------
+if (!isVercel) {
+  connectDB()
     .then(() => {
-        const port = process.env.PORT || 8000
-        app.listen(port, () => {
-            console.log(`Server is running on port ${port}`)
-        })
+      const port = process.env.PORT || 8000;
+      app.listen(port, () => {
+        console.log("🚀 Local server running on http://localhost:" + port);
+      });
     })
     .catch((err) => {
-        console.log("MongoDB connection failed !!! ", err)
-        process.exit(1)
-    })
-
-
-export default app
+      console.error("MongoDB Connection Failed:", err);
+      process.exit(1);
+    });
+}
