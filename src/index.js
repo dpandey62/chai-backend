@@ -38,5 +38,5 @@ connectDB()
         process.exit(1)
     })
 
-// Vercel ke liye zaroori line — default export
+
 export default app
