@@ -52,7 +52,6 @@
 //     });
 // }
 
-
 import dotenv from "dotenv";
 import connectDB from "./db/index.js";
 import app from "./app.js";
@@ -60,25 +59,31 @@ import serverless from "serverless-http";
 
 dotenv.config();
 
-// Serverless handler (Vercel)
-const handler = serverless(app);
+let isConnected = false;
+const expressHandler = serverless(app);
 
-export default async function handlerVercel(req, res) {
+// ------------------------
+// VERCEL SERVERLESS HANDLER
+// ------------------------
+export default async function handler(req, res) {
   try {
-    // Connect to DB only once (serverless cold start)
-    if (!global.mongooseConnected) {
+    if (!isConnected) {
       await connectDB();
-      global.mongooseConnected = true;
+      isConnected = true;
+      console.log("MongoDB connected (Vercel)");
     }
 
-    return handler(req, res);
-  } catch (error) {
-    console.error("❌ Serverless Error:", error);
-    return res.status(500).json({ error: error.message });
+    return expressHandler(req, res);
+
+  } catch (err) {
+    console.error("❌ Serverless Error:", err);
+    return res.status(500).json({ error: err.message });
   }
 }
 
-// FOR LOCAL DEVELOPMENT ONLY
+// ------------------------
+// LOCAL DEVELOPMENT SERVER
+// ------------------------
 if (!process.env.VERCEL) {
   connectDB().then(() => {
     const port = process.env.PORT || 8000;
@@ -87,6 +92,7 @@ if (!process.env.VERCEL) {
     });
   });
 }
+
 
 
 
