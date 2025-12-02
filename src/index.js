@@ -5,18 +5,18 @@ import serverless from "serverless-http";
 
 dotenv.config({ path: ".env" });
 
-// Detect if running on Vercel
-const isVercel = !!process.env.VERCEL;
+// Detect Vercel environment
+const isVercel = process.env.VERCEL ? true : false;
 
-// Track DB connection
+// Track MongoDB connection for serverless cold starts
 let isConnected = false;
 
-// Wrap Express app using serverless-http
+// Wrap Express app for Vercel serverless runtime
 const handler = serverless(app);
 
-// -------------------------------------
-// VERCEL SERVERLESS HANDLER (ES MODULE)
-// -------------------------------------
+// --------------------------------------------------
+//  VERCEL SERVERLESS HANDLER (export default for ESM)
+// --------------------------------------------------
 export default async function vercelHandler(req, res) {
   try {
     if (!isConnected) {
@@ -25,21 +25,28 @@ export default async function vercelHandler(req, res) {
       console.log("MongoDB connected (Vercel)");
     }
 
-    return handler(req, res); // serverless express handler
+    return handler(req, res);
   } catch (err) {
-    console.error("❌ Vercel Error:", err);
-    return res.status(500).json({ error: "Server error" });
+    console.error("❌ Vercel Handler Error:", err);
+    return res.status(500).json({
+      error: err.message || "Server error",
+    });
   }
 }
 
-// -------------------------------------
-// LOCAL DEVELOPMENT SERVER
-// -------------------------------------
+// --------------------------------------------------
+//  LOCAL DEVELOPMENT MODE (no serverless needed)
+// --------------------------------------------------
 if (!isVercel) {
-  connectDB().then(() => {
-    const port = process.env.PORT || 8000;
-    app.listen(port, () => {
-      console.log("🚀 Local server running at http://localhost:" + port);
+  connectDB()
+    .then(() => {
+      const port = process.env.PORT || 8000;
+      app.listen(port, () => {
+        console.log(`🚀 Local server running at http://localhost:${port}`);
+      });
+    })
+    .catch((error) => {
+      console.error("❌ Local MongoDB Connection Failed:", error);
+      process.exit(1);
     });
-  });
 }
