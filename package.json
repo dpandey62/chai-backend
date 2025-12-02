@@ -2,7 +2,9 @@
   "name": "chai-aur-code",
   "version": "1.0.0",
   "description": "",
-  "keywords": ["javascript"],
+  "keywords": [
+    "javascript"
+  ],
   "license": "ISC",
   "author": "Dpandey",
   "type": "module",
@@ -11,7 +13,6 @@
     "node": "24.x"
   },
   "scripts": {
-    
     "dev": "nodemon src/index.js",
     "start": "node src/index.js"
   },
@@ -21,13 +22,15 @@
   },
   "dependencies": {
     "bcrypt": "^6.0.0",
+    "body-parser": "^2.2.1",
     "cloudinary": "^2.7.0",
     "cookie-parser": "^1.4.7",
     "cors": "^2.8.5",
     "dotenv": "^17.0.1",
-    "express": "^5.1.0",
+    "express": "^5.2.1",
     "jsonwebtoken": "^9.0.2",
-    "mongoose": "^8.16.1",
-    "multer": "^2.0.1"
+    "mongoose": "^8.20.1",
+    "multer": "^2.0.1",
+    "serverless-http": "^4.0.0"
   }
 }
