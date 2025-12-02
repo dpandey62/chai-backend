@@ -52,10 +52,7 @@
 //     });
 // }
 
-<<<<<<< HEAD
 
-=======
->>>>>>> cc931ca72445ed586353d5ef7d5f0377ce261452
 import dotenv from "dotenv";
 import connectDB from "./db/index.js";
 import app from "./app.js";
@@ -63,57 +60,44 @@ import serverless from "serverless-http";
 
 dotenv.config();
 
-<<<<<<< HEAD
-// Serverless handler (Vercel)
-const handler = serverless(app);
-
-export default async function handlerVercel(req, res) {
-=======
-let isConnected = false;
+// Wrap express app for serverless
 const expressHandler = serverless(app);
 
-// ------------------------
-// VERCEL SERVERLESS HANDLER
-// ------------------------
+// Track DB connection
+let isConnected = false;
+
+// -----------------------------
+// 🚀 VERCEL SERVERLESS HANDLER
+// -----------------------------
 export default async function handler(req, res) {
->>>>>>> cc931ca72445ed586353d5ef7d5f0377ce261452
   try {
-    // Connect to DB only once (serverless cold start)
-    if (!global.mongooseConnected) {
+    // Connect only once (cold start)
+    if (!isConnected) {
       await connectDB();
-      global.mongooseConnected = true;
+      isConnected = true;
+      console.log("MongoDB Connected (Vercel)");
     }
 
-<<<<<<< HEAD
-    return handler(req, res);
+    return expressHandler(req, res);
+
   } catch (error) {
-    console.error("❌ Serverless Error:", error);
+    console.error("❌ Serverless Error:", error.message);
     return res.status(500).json({ error: error.message });
   }
 }
 
-// FOR LOCAL DEVELOPMENT ONLY
-=======
-    return expressHandler(req, res);
-
-  } catch (err) {
-    console.error("❌ Serverless Error:", err);
-    return res.status(500).json({ error: err.message });
-  }
-}
-
-// ------------------------
-// LOCAL DEVELOPMENT SERVER
-// ------------------------
->>>>>>> cc931ca72445ed586353d5ef7d5f0377ce261452
+// -----------------------------
+// 🚀 LOCAL DEVELOPMENT MODE
+// -----------------------------
 if (!process.env.VERCEL) {
   connectDB().then(() => {
     const port = process.env.PORT || 8000;
     app.listen(port, () => {
-      console.log("🚀 Local server running at http://localhost:" + port);
+      console.log("Local server running → http://localhost:" + port);
     });
   });
 }
+
 
 
 
