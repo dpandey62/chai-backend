@@ -4,6 +4,7 @@ import app from "./app.js";
 import serverless from "serverless-http";
 
 dotenv.config({ path: ".env" });
+console.log("🔥 Vercel handler loaded!");
 
 // Detect Vercel environment
 const isVercel = process.env.VERCEL ? true : false;
@@ -50,3 +51,4 @@ if (!isVercel) {
       process.exit(1);
     });
 }
+
